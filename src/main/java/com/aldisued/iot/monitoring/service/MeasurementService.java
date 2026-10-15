@@ -6,6 +6,8 @@ import com.aldisued.iot.monitoring.repository.SensorReadingRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,10 +19,10 @@ public class MeasurementService {
     this.sensorReadingRepository = sensorReadingRepository;
   }
 
-  public List<Double> getMeasurementValuesBySensorType(SensorType sensorType, LocalDateTime from,
-      LocalDateTime to) {
-    // TODO: Task 8
-    return List.of();
+  public List<Double> getMeasurementValuesBySensorType(SensorType sensorType, LocalDateTime from, LocalDateTime to) {
+    var sensorReadings = sensorReadingRepository.findBySensorTypeAndTimestampBetweenOrderByTimestampAsc(sensorType, from, to);
+
+    return sensorReadings.stream().map(SensorReading::getValue).collect(Collectors.toList());
   }
 
   public Optional<Double> getAverageTemperature(LocalDateTime from, LocalDateTime to) {
